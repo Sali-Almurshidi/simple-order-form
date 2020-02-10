@@ -16,6 +16,15 @@ function whatIsHappening() {
     var_dump($_SESSION);
 }
 
+function checkEmail($email){
+    filter_var($email, FILTER_VALIDATE_EMAIL);
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                     return true ;
+                } else {
+                    return false ;
+                }
+}
+
 //your products with their price.
 $products = [
     ['name' => 'Club Ham', 'price' => 3.20],

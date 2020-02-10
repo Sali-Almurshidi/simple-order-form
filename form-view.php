@@ -1,3 +1,23 @@
+<?php
+
+if (isset($_POST['order'])){
+
+   if(!empty($_POST['email'])){
+       $checkEmail = checkEmail($_POST['email']);
+       if ($checkEmail == false){
+           $resultCheckEmail = "This is not valid email address"  ;
+       }else{
+           $resultCheckEmail = "This is valid email address"  ;
+       }
+   }else{
+       $resultCheckEmail = "Enter email address"  ;
+   }// the email input empty
+
+}// after click on order
+
+
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -22,11 +42,15 @@
             </li>
         </ul>
     </nav>
-    <form method="post">
+    <form method="post" >
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
-                <input type="text" id="email" name="email" class="form-control"/>
+                <input type="email" placeholder="user@gmail.com" id="email" name="email" class="form-control"/>
+                <?php
+                // to check valid email address
+                echo $resultCheckEmail ;
+                ?>
             </div>
             <div></div>
         </div>
@@ -65,7 +89,7 @@
             <?php endforeach; ?>
         </fieldset>
 
-        <button type="submit" class="btn btn-primary">Order!</button>
+        <button type="submit" class="btn btn-primary" name="order">Order!</button>
     </form>
 
     <footer>You already ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
