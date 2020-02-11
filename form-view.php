@@ -14,21 +14,21 @@
 <div class="container">
     <h1>Order food in restaurant "the Personal Ham Processors"</h1>
     <nav>
-        <ul class="nav">
-            <li class="nav-item">
-                <a class="nav-link active" href="?food=1">Order food</a>
+        <ul class="nav" method="get">
+            <li class="nav-item"  >
+                <a class="nav-link active" href="?food=1"  >Order food</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="?food=0">Order drinks</a>
+            <li class="nav-item" >
+                <a class="nav-link" href="?food=0" >Order drinks</a>
             </li>
         </ul>
     </nav>
     <form method="post" >
+        <?php echo $orderSend; ?>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
                 <input type="email" placeholder="user@gmail.com" id="email" name="email" class="form-control" value="<?php echo ($_POST['email']) ?> "/>
-
                     <?php echo $resultCheckEmail ;?>
             </div>
             <div></div>
@@ -63,22 +63,22 @@
                         <?php
                         echo $falseZipcode;
                         ?>
-
                 </div>
             </div>
         </fieldset>
 
         <fieldset>
-            <legend>Products Food</legend>
+            <legend>Products <?php echo $listName ?></legend>
             <?php echo $selectNothing ?>
+
             <?php foreach ($productsFood AS $i => $product): ?>
                 <label>
                     <input type="checkbox" value="<?php echo $product['name'] ?>"
-                        <?php if(isset($_POST['productsFood'][$i]) ){
+                        <?php if(isset($_POST['products'][$i]) ){
                             echo "checked='checked'";
                         }
                              ?>
-                           name="productsFood[<?php echo $i ?>]"
+                           name="products[<?php echo $i ?>]"
                     /> <?php echo $product['name'] ?> -
                     &euro; <?php echo number_format($product['price'], 2) ?></label><br
 
