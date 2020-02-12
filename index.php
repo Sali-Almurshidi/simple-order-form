@@ -1,9 +1,9 @@
 <?php
 //this line makes PHP behave in a more strict way
 declare(strict_types=1);
-$cookie_name = "user";
+/*$cookie_name = "user";
 $cookie_value = "John Doe";
-setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
+setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day*/
 /*ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);*/
@@ -24,9 +24,9 @@ $AddressFileds = null;
 $falseStreetNumber = null;
 $falseZipcode = null;
 $selectNothing = null;
-$selectFood = array();
-//$_SESSION['$totalValue'] = $totalFoodValue;
 $orderSend = null;
+$AddressFileds = null ;
+//dataforCLIENT
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -36,8 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $street = $_SESSION['street'];
         $city = $_SESSION['city'];
         $zipcode = $_SESSION['zipcode'];
+        $totalValue = $_SESSION['totalValue'];
     }
-}// keep the information after go to food or drink page
+}// get the information after click on the get method
 
 if ($_GET['food'] == 1) {
     $listName = " Food";
@@ -56,7 +57,7 @@ if ($_GET['food'] == 1) {
         ['name' => 'Sprite', 'price' => 2],
         ['name' => 'Ice-tea', 'price' => 3],
     ]; // drinks array;
-}
+}// change list items
 
 function whatIsHappening()
 {
@@ -82,8 +83,6 @@ function checkEmail($email)
 
 function getEmail($email)
 {
-    $emailAddress = $_SESSION['emailAddress'];
-    if (!empty($email)) {
         $checkEmail = checkEmail($email);
         if ($checkEmail == false) {
             $resultCheckEmail = "<div class=\"alert alert-danger\" role=\"alert\"> This is not valid email address</div>";
@@ -93,15 +92,10 @@ function getEmail($email)
             $emailAddress = $email;
             $_SESSION['emailAddress'] = $emailAddress;
         }
-    } else {
-        $resultCheckEmail = "<div class=\"alert alert-danger\" role=\"alert\"> Enter email address</div>";
-    }// the email input empty
 }// check if email not empty and valid;
 
 function getAddress($streetnumber, $street, $city, $zipcode)
 {
-    if (!empty($streetnumber) && !empty($street) && !empty($city) && !empty($zipcode)) {
-
         $numStreet = true;
         $numZipCode = true;
 
@@ -125,36 +119,68 @@ function getAddress($streetnumber, $street, $city, $zipcode)
 
         }
 
-    } else {
-        $AddressFileds = "<div class=\"alert alert-danger\" role=\"alert\"> Complete your address </div>";
-    }
 }// address
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+     // get the input from the screen
+    $emailAddress = $_POST['email'];
+    $streetnumber = $_POST['streetnumber'];
+    $street = $_POST['street'];
+    $city = $_POST['city'];
+    $zipcode = $_POST['zipcode'];
 
-    getEmail($_POST['email']);
+    if($emailAddress == null){
+        $resultCheckEmail = "<div class=\"alert alert-danger\" role=\"alert\"> Enter email address</div>";
+    }else{
+        getEmail($emailAddress);
+    }//  email is not empty
 
-    getAddress($_POST['streetnumber'], $_POST['street'], $_POST['city'], $_POST['zipcode']);
+    if((!empty($_POST['streetnumber'])) || (!empty($_POST['street'])) || (!empty($_POST['city'])) || (!empty($_POST['zipcode']))){
+        $AddressFileds = "<div class=\"alert alert-danger\" role=\"alert\"> Complete your address </div>";
+    }else{
+        getAddress($streetnumber, $street, $city, $zipcode);
+    }// address is not empty
 
-    $totalValue = $_SESSION['totalFoodPrice'] + $_SESSION['totalDrinksPrice'];
-
+    $totalValue = $_SESSION['totalValue'];
 
     if (!empty($_POST['products'])) {
         $selectProducts = $_POST['products'];
         //$totalFoodValue = $_SESSION['totalFoodPrice'];
-        $totalValue = 0.0;
+        //$totalValue = 0.0;
         foreach ($selectProducts as $key => $foodName) {
             $totalValue += floatval($products[$key]["price"]);
         }
-        //$_SESSION['totalFoodPrice'] = $totalFoodValue;
-        var_dump($selectProducts);
+        $_SESSION['totalValue'] = $totalValue;
+        // var_dump($selectProducts);
     } else {
         $selectNothing = "<div class=\"alert alert-danger\" role=\"alert\"> You didn't select any food </div>";
     }
 
-    $orderSend = "<div class=\"alert alert-dark\" role=\"alert\"> This order has been sent and the expected delivery time is 2h and 45m maybe</div>";
+    $time = " normal ";
+    if ($_SESSION['totalValue'] > 15) {
+        $time = " extra ";
+    }
 
-}
+    if ($_SESSION['emailAddress'] != '' && $_SESSION['streetnumber'] != '' && $_SESSION['street'] != '' && $_SESSION['city'] != '' && $_SESSION['zipcode'] != '' && $_POST['products'] != '') {
+        $orderSend = "<div class=\"alert alert-dark\" role=\"alert\"> This order has been sent and the expected delivery it will take " . $time . " time maybe</div>";
+
+        //$to      = 'nobody@example.com';
+        $subject = 'Your order';
+        $message = 'The total order price is : ' . $_SESSION['totalValue'] . 'and 20€ for delivery =  ' . $_SESSION['totalValue'] + 20 . "\r\n" .
+            'your address is : city ' . $_SESSION['city'] . ' ,street ' . $_SESSION['street'] . ' ,street number ' . $_SESSION['streetnumber'] .
+            ',zipcode ' . $_SESSION['zipcode'] . "\r\n" .
+            'The delivery time is ' . $time . "\r\n";
+
+        $headers = 'From: order@form.com';
+
+        mail($_SESSION['emailAddress'], $subject, $message, $headers);
+        var_dump(mail);
+
+    } else {
+        $orderSend = "<div class=\"alert alert-danger\" role=\"alert\"> O_o O_o O_o O_o O_o </div>";
+    }// the order is ok or not
+
+} // get the information after click on the post method
 
 
 require 'form-view.php';

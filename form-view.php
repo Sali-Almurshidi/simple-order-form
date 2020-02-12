@@ -38,9 +38,7 @@
 
         <fieldset>
             <legend>Address</legend>
-            <?php
-            echo $AddressFileds;
-            ?>
+            <?php echo $AddressFileds; ?>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="street">Street:</label>
