@@ -25,58 +25,52 @@
         </ul>
     </nav>
     <form method="post">
-        <?php echo $orderSend; ?>
+        <?php echo $data->orderSend; ?>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
                 <input type="email" placeholder="user@gmail.com" id="email" name="email" class="form-control"
-                       value="<?php echo $emailAddress ?> "/>
-                <?php echo $resultCheckEmail; ?>
+                       value="<?php echo $data->emailAddress ?> "/>
+                <?php echo $data->resultCheckEmail; ?>
             </div>
             <div></div>
         </div>
 
         <fieldset>
             <legend>Address</legend>
-            <?php echo $AddressFileds; ?>
+            <?php echo $data->AddressFileds; ?>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="street">Street:</label>
-                    <input type="text" name="street" id="street" class="form-control" value="<?php echo $street ?> ">
+                    <input type="text" name="street" id="street" class="form-control"
+                           value="<?php echo $data->street ?> ">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="streetnumber">Street number:</label>
                     <input type="text" id="streetnumber" name="streetnumber" class="form-control"
-                           value="<?php echo $streetnumber; ?> ">
-                    <?php
-                    echo $falseStreetNumber;
-                    ?>
+                           value="<?php echo $data->streetnumber; ?> ">
+                    <?php echo $data->falseStreetNumber; ?>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="city">City:</label>
-                    <input type="text" id="city" name="city" class="form-control" value="<?php echo $city; ?> ">
+                    <input type="text" id="city" name="city" class="form-control" value="<?php echo $data->city; ?> ">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="zipcode">Zipcode</label>
                     <input type="text" id="zipcode" name="zipcode" class="form-control"
-                           value="<?php echo $zipcode; ?> ">
-                    <?php
-                    echo $falseZipcode;
-                    ?>
+                           value="<?php echo $data->zipcode; ?> ">
+                    <?php echo $data->falseZipcode; ?>
                 </div>
             </div>
         </fieldset>
 
         <fieldset>
-            <legend>Products <?php echo $listName ?></legend>
-            <?php echo $selectNothing ?>
+            <legend>Products <?php echo $data->listName ?></legend>
+            <?php echo $data->selectNothing ?>
 
-            <?php
-
-            //if($listName == "Food"){
-            foreach ($products AS $i => $product): ?>
+            <?php foreach ($products AS $i => $product): ?>
                 <label>
                     <input type="checkbox" value="<?php echo $product['name'] ?>"
                         <?php if (isset($_POST['products'][$i])) {
@@ -85,19 +79,14 @@
                         ?>
                            name="products[<?php echo $i ?>]"
                     /> <?php echo $product['name'] ?> -
-                    &euro; <?php echo number_format($product['price'], 2) ?></label><br
-
-                />
-            <?php endforeach;
-            ?>
-
+                    &euro; <?php echo number_format($product['price'], 2) ?></label><br/>
+            <?php endforeach; ?>
 
         </fieldset>
-
         <button type="submit" class="btn btn-primary" name="order">Order!</button>
     </form>
 
-    <footer>You already ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
+    <footer>You already ordered <strong>&euro; <?php echo $data->totalValue ?></strong> in food and drinks.</footer>
 </div>
 
 <style>
