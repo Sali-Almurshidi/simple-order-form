@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 session_start();
 include 'allData.php';
+
 $data = new allDataHere();
 
 $products = [
@@ -13,6 +14,25 @@ $products = [
     ['name' => 'Club Chicken', 'price' => 4],
     ['name' => 'Club Salmon', 'price' => 5]
 ];
+
+if ($_GET['food'] == 1 || $_GET['food'] == null) {
+    $data->listName = " Food";
+    $products = [
+        ['name' => 'Club Ham', 'price' => 3.20],
+        ['name' => 'Club Cheese', 'price' => 3],
+        ['name' => 'Club Cheese & Ham', 'price' => 4],
+        ['name' => 'Club Chicken', 'price' => 4],
+        ['name' => 'Club Salmon', 'price' => 5]
+    ]; // food array;
+} else {
+    $data->listName = " Drinks";
+    $products = [
+        ['name' => 'Cola', 'price' => 2],
+        ['name' => 'Fanta', 'price' => 2],
+        ['name' => 'Sprite', 'price' => 2],
+        ['name' => 'Ice-tea', 'price' => 3],
+    ]; // drinks array;
+}// change list items
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if ($_SESSION['emailAddress'] != '' || $_SESSION['streetnumber'] != '' || $_SESSION['street'] != '' || $_SESSION['city'] != '' || $_SESSION['zipcode'] != '') {
@@ -24,25 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $data->totalValue = $_SESSION['totalValue'];
     }
 }// get the information after click on the get method
-
-if ($_GET['food'] != 1 ) {
-    $data->listName = " Drinks";
-    $products = [
-        ['name' => 'Cola', 'price' => 2],
-        ['name' => 'Fanta', 'price' => 2],
-        ['name' => 'Sprite', 'price' => 2],
-        ['name' => 'Ice-tea', 'price' => 3],
-    ]; // drinks array;
-} else {
-    $data->listName = " Food";
-    $products = [
-        ['name' => 'Club Ham', 'price' => 3.20],
-        ['name' => 'Club Cheese', 'price' => 3],
-        ['name' => 'Club Cheese & Ham', 'price' => 4],
-        ['name' => 'Club Chicken', 'price' => 4],
-        ['name' => 'Club Salmon', 'price' => 5]
-    ];
-}// change list items
 
 function whatIsHappening()
 {
@@ -108,20 +109,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (($data->streetnumber == null) || ($data->street == null) || ($data->city == null) || ($data->zipcode == null)) {
         $data->AddressFileds = "<div class=\"alert alert-danger\" role=\"alert\"> Complete your address </div>";
     } else {
-        if (is_numeric['streetnumber'] && is_numeric['zipcode']) {
-            //$streetnumber = '';
-            getAddress($data->streetnumber, $data->street, $data->city, $data->zipcode);
-            //   $numStreet = false;
+        //echo is_numeric['streetnumber'] . " num" ;
+       // echo is_numeric['zipcode'] ;
+        if (!(is_numeric['streetnumber']) || !(is_numeric['zipcode'])) {
+
+            echo is_numeric['streetnumber'] ;
+            $_SESSION['streetnumber'] = '';
+            $_SESSION['zipcode'] = '';
+            $data->falseStreetNumber = "<div class=\"alert alert-danger\" role=\"alert\"> have to be number </div>";;
+
         } // the street have to be number
         else{
-            $falseStreetNumber = "<div class=\"alert alert-danger\" role=\"alert\"> Have to be number</div>";
+            getAddress($data->streetnumber, $data->street, $data->city, $data->zipcode);
         }
-
-     /*   if (!is_numeric['zipcode']) {
-            $falseZipcode = "<div class=\"alert alert-danger\" role=\"alert\"> Have to be number</div>";
-            $_SESSION['zipcode'] = '';
-            //    $numZipCode = false;
-        } // // the zip code have to be number*/
 
     }// address is not empty
 
@@ -129,20 +129,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!empty($_POST['products'])) {
         $selectProducts = $_POST['products'];
-        //$totalFoodValue = $_SESSION['totalFoodPrice'];
-        //$totalValue = 0.0;
         foreach ($selectProducts as $key => $foodName) {
             $data->totalValue += floatval($products[$key]["price"]);
         }
         $_SESSION['totalValue'] = $data->totalValue;
-        // var_dump($selectProducts);
     } else {
         $data->selectNothing = "<div class=\"alert alert-danger\" role=\"alert\"> You didn't select any food </div>";
     }
 
-    $time = " normal ";
+    $time = " normal ".date('H:i:s', strtotime('+45 minute'));
     if ($_SESSION['totalValue'] > 15) {
-        $time = " extra ";
+        $time = " extra " .date('H:i:s', strtotime('+2 hour'));
     }
 
     if ($_SESSION['emailAddress'] != '' && $_SESSION['streetnumber'] != '' && $_SESSION['street'] != '' && $_SESSION['city'] != '' && $_SESSION['zipcode'] != '' && $_POST['products'] != '') {

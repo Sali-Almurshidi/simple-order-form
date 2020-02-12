@@ -61,7 +61,7 @@
                     <label for="zipcode">Zipcode</label>
                     <input type="text" id="zipcode" name="zipcode" class="form-control"
                            value="<?php echo $data->zipcode; ?> ">
-                    <?php echo $data->falseZipcode; ?>
+                    <?php echo $data->falseStreetNumber; ?>
                 </div>
             </div>
         </fieldset>
